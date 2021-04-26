@@ -13,12 +13,12 @@ locals {
   k8s_conf_default = {
     auto_upgrade = true
     description  = "${var.name} Kubernetes cluster"
-    name         = "${var.name}-cluster"
+    name         = "k8s-${var.name}-cluster"
     node_pool_worker = {
       autoscale  = true
       max_nodes  = 5
       min_nodes  = 1
-      name       = "${var.name}-worker"
+      name       = "k8s-${var.name}-worker"
       node_count = 1
       size       = local.do_conf_merged.node_droplet_size_slug
       tags       = []
@@ -26,17 +26,13 @@ locals {
     surge_upgrade = true
     tags          = []
     version       = "1.20"
-    vpc_ip_range  = "10.0.0.0/16"
+    vpc_ip_range  = null
   }
 
   k8s_conf_merged = merge(
     local.k8s_conf_default,
     var.k8s_conf,
   )
-}
-
-output "do" {
-  value = local.do_conf_merged
 }
 
 module "cluster" {
