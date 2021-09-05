@@ -13,19 +13,19 @@ locals {
   k8s_conf_default = {
     auto_upgrade = true
     description  = "${var.name} Kubernetes cluster"
-    name         = "k8s-${var.name}-cluster"
+    name         = "${var.name}-k8s-cluster"
     node_pool_worker = {
       autoscale  = true
       max_nodes  = 5
       min_nodes  = 1
-      name       = "k8s-${var.name}-worker"
+      name       = "${var.name}-k8s-worker"
       node_count = 1
       size       = local.do_conf_merged.node_droplet_size_slug
       tags       = []
     }
     surge_upgrade = true
     tags          = []
-    version       = "1.20"
+    version       = "1.21"
     vpc_ip_range  = null
   }
 
