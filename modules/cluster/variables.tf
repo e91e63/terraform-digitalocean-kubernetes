@@ -2,6 +2,7 @@
 variable "do_conf" {
   type = object({
     node_droplet_size_slug = string
+    project_name           = string
     region                 = string
   })
 }
@@ -13,13 +14,12 @@ variable "k8s_conf" {
     description  = string
     name         = string,
     node_pool_worker = object({
-      autoscale  = bool
-      max_nodes  = number
-      min_nodes  = number
-      name       = string
-      node_count = number
-      size       = string
-      tags       = list(string)
+      autoscale = bool
+      max_nodes = number
+      min_nodes = number
+      name      = string
+      size      = string
+      tags      = list(string)
     })
     surge_upgrade = bool
     tags          = list(string)

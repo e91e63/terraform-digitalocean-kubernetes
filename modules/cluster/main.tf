@@ -1,16 +1,10 @@
-# TODO Solve kubeconfig
-# resource "local_file" "kubeconfig" {
-#   content         = digitalocean_kubernetes_cluster.master.kube_config[0].raw_config
-#   filename        = var.kubeconfig_path
-#   file_permission = "600"
-# }
-
-
 data "digitalocean_kubernetes_versions" "main" {
   version_prefix = var.k8s_conf.version
 }
 
-# TODO load balancer
+data "digitalocean_project" "main" {
+  name = var.do_conf.project_name
+}
 
 resource "digitalocean_kubernetes_cluster" "main" {
   # depends_on = [digitalocean_vpc.cluster]
@@ -28,10 +22,16 @@ resource "digitalocean_kubernetes_cluster" "main" {
     max_nodes  = var.k8s_conf.node_pool_worker.max_nodes
     min_nodes  = var.k8s_conf.node_pool_worker.min_nodes
     name       = var.k8s_conf.node_pool_worker.name
-    node_count = var.k8s_conf.node_pool_worker.node_count
     size       = var.k8s_conf.node_pool_worker.size
     tags       = var.k8s_conf.node_pool_worker.tags
   }
+}
+
+resource "digitalocean_project_resources" "main" {
+  project = data.digitalocean_project.main.id
+  resources = [
+    digitalocean_kubernetes_cluster.main.urn
+  ]
 }
 
 # TODO capture the default VPCs and dance around them
