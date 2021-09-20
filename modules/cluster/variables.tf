@@ -1,6 +1,6 @@
-# https://slugs.do-api.dev/
 variable "do_conf" {
   type = object({
+    # https://slugs.do-api.dev/
     node_droplet_size_slug = string
     project_name           = string
     region                 = string
