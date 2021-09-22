@@ -79,25 +79,3 @@ resource "kubernetes_service_account" "serviceaccount_default" {
   }
 
 }
-
-
-# resource "kubernetes_manifest" "serviceaccount_default" {
-#   manifest = {
-#     "apiVersion" = "v1"
-#     "kind"       = "ServiceAccount"
-#     "metadata" = {
-#       "name"      = "default"
-#       "namespace" = "default"
-#     }
-#     "secrets" = [
-#       {
-#         "name" = "default-token-ww7t8"
-#       },
-#     ]
-#     "imagePullSecrets" = [
-#       {
-#         "name" = local.secret_name
-#       }
-#     ]
-#   }
-# }
