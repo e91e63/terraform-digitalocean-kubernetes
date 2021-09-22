@@ -6,6 +6,15 @@ data "digitalocean_project" "main" {
   name = var.do_conf.project_name
 }
 
+resource "digitalocean_container_registry" "main" {
+  name                   = var.do_conf.project_name
+  subscription_tier_slug = "basic"
+}
+
+resource "digitalocean_container_registry_docker_credentials" "main" {
+  registry_name = digitalocean_container_registry.main.name
+}
+
 resource "digitalocean_kubernetes_cluster" "main" {
   # depends_on = [digitalocean_vpc.cluster]
 
@@ -41,3 +50,54 @@ resource "digitalocean_vpc" "main" {
   name        = var.k8s_conf.name
   region      = var.do_conf.region
 }
+
+locals {
+  secret_name = "${var.do_conf.project_name}-docker-registry-credentials"
+}
+
+resource "kubernetes_secret" "main" {
+  metadata {
+    name = local.secret_name
+  }
+
+  data = {
+    ".dockerconfigjson" = digitalocean_container_registry_docker_credentials.main.docker_credentials
+  }
+
+  type = "kubernetes.io/dockerconfigjson"
+}
+
+resource "kubernetes_service_account" "serviceaccount_default" {
+  automount_service_account_token = false
+  metadata {
+    name      = "default"
+    namespace = "default"
+  }
+
+  image_pull_secret {
+    name = local.secret_name
+  }
+
+}
+
+
+# resource "kubernetes_manifest" "serviceaccount_default" {
+#   manifest = {
+#     "apiVersion" = "v1"
+#     "kind"       = "ServiceAccount"
+#     "metadata" = {
+#       "name"      = "default"
+#       "namespace" = "default"
+#     }
+#     "secrets" = [
+#       {
+#         "name" = "default-token-ww7t8"
+#       },
+#     ]
+#     "imagePullSecrets" = [
+#       {
+#         "name" = local.secret_name
+#       }
+#     ]
+#   }
+# }
