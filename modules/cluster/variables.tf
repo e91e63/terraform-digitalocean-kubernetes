@@ -27,10 +27,3 @@ variable "k8s_conf" {
     vpc_ip_range  = string
   })
 }
-
-
-# variable "kubeconfig_path" {
-#   type        = string
-#   default     = "./kubeconfig"
-#   description = "Kubeconfig path"
-# }

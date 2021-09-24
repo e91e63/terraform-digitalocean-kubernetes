@@ -1,4 +1,4 @@
-output "kube_config" {
+output "conf" {
   sensitive = true
   value     = digitalocean_kubernetes_cluster.main.kube_config[0]
 }
