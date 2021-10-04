@@ -21,11 +21,15 @@ locals {
       min_nodes = 1
       name      = "${var.project_conf.name}-k8s-worker"
       size      = local.do_conf_merged.node_droplet_size_slug
-      tags      = []
+      tags = [
+        "${var.project_conf.name}-k8s-worker",
+      ]
     }
     surge_upgrade = true
-    tags          = []
-    vpc_ip_range  = null
+    tags = [
+      "${var.project_conf.name}-k8s-cluster",
+    ]
+    vpc_ip_range = null
   }
 
   k8s_conf_merged = merge(
