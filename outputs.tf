@@ -1,8 +1,4 @@
-output "cluster_id" {
-  value = module.cluster.id
-}
-
-output "conf" {
+output "info" {
   sensitive = true
-  value     = module.cluster.conf
+  value     = module.cluster.info
 }
