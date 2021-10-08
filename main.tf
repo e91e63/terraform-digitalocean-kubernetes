@@ -18,7 +18,7 @@ locals {
     node_pool_worker = {
       autoscale = true
       max_nodes = 5
-      min_nodes = 1
+      min_nodes = 3
       name      = "${var.project_conf.name}-k8s-worker"
       size      = local.do_conf_merged.node_droplet_size_slug
       tags = [
