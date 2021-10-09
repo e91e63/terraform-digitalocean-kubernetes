@@ -2,19 +2,6 @@ data "digitalocean_kubernetes_versions" "main" {
   version_prefix = var.k8s_conf.version
 }
 
-data "digitalocean_project" "main" {
-  name = var.do_conf.project_name
-}
-
-resource "digitalocean_container_registry" "main" {
-  name                   = var.do_conf.project_name
-  subscription_tier_slug = "basic"
-}
-
-resource "digitalocean_container_registry_docker_credentials" "main" {
-  registry_name = digitalocean_container_registry.main.name
-}
-
 resource "digitalocean_kubernetes_cluster" "main" {
   # depends_on = [digitalocean_vpc.cluster]
 
@@ -37,7 +24,7 @@ resource "digitalocean_kubernetes_cluster" "main" {
 }
 
 resource "digitalocean_project_resources" "main" {
-  project = data.digitalocean_project.main.id
+  project = var.project_info.id
   resources = [
     digitalocean_kubernetes_cluster.main.urn
   ]
@@ -49,33 +36,4 @@ resource "digitalocean_vpc" "main" {
   ip_range    = var.k8s_conf.vpc_ip_range
   name        = var.k8s_conf.name
   region      = var.do_conf.region
-}
-
-locals {
-  secret_name = "${var.do_conf.project_name}-docker-registry-credentials"
-}
-
-resource "kubernetes_secret" "main" {
-  metadata {
-    name = local.secret_name
-  }
-
-  data = {
-    ".dockerconfigjson" = digitalocean_container_registry_docker_credentials.main.docker_credentials
-  }
-
-  type = "kubernetes.io/dockerconfigjson"
-}
-
-resource "kubernetes_service_account" "serviceaccount_default" {
-  automount_service_account_token = false
-  metadata {
-    name      = "default"
-    namespace = "default"
-  }
-
-  image_pull_secret {
-    name = local.secret_name
-  }
-
 }

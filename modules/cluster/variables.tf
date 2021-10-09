@@ -27,3 +27,10 @@ variable "k8s_conf" {
     vpc_ip_range  = string
   })
 }
+
+variable "project_info" {
+  type = object({
+    id   = string
+    name = string
+  })
+}
