@@ -1,30 +1,19 @@
-variable "do_conf" {
+variable "kubernetes_conf" {
   type = object({
-    # https://slugs.do-api.dev/
-    node_droplet_size_slug = string
-    project_name           = string
-    region                 = string
-  })
-}
-
-# https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/kubernetes_cluster#argument-reference
-variable "k8s_conf" {
-  type = object({
-    auto_upgrade = bool
-    description  = string
-    name         = string,
+    auto_upgrade = optional(bool)
+    description  = optional(string)
+    name         = optional(string),
     node_pool_worker = object({
-      autoscale = bool
-      max_nodes = number
-      min_nodes = number
-      name      = string
-      size      = string
-      tags      = list(string)
+      autoscale              = optional(bool)
+      max_nodes              = optional(number)
+      min_nodes              = optional(number)
+      name                   = optional(string)
+      node_droplet_size_slug = string
     })
-    surge_upgrade = bool
-    tags          = list(string)
+    region        = string
+    surge_upgrade = optional(bool)
     version       = string
-    vpc_ip_range  = string
+    vpc_uuid      = string
   })
 }
 

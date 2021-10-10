@@ -4,9 +4,9 @@ Creates a Kubernetes cluster in DigitalOcean
 
 # Kube Config
 
-``` sh
+```sh
 sudo snap connect doctl:kube-config
 mkdir "$HOME/.kube"
-CLUSTER_ID=$(terragrunt output -json | jq -r '.cluster_id.value')
+CLUSTER_ID=$(terragrunt output -json | jq -r '.info.value.id')
 doctl kubernetes cluster kubeconfig save "$CLUSTER_ID"
 ```

@@ -1,26 +1,39 @@
 data "digitalocean_kubernetes_versions" "main" {
-  version_prefix = var.k8s_conf.version
+  version_prefix = local.kubernetes_conf.version
+}
+
+locals {
+  # TODO: Place tags here once optional works with lists
+  kubernetes_conf = defaults(var.kubernetes_conf, {
+    auto_upgrade = true
+    description  = "${var.project_info.name} Kubernetes cluster"
+    name         = "${var.project_info.name}-k8s-cluster"
+    node_pool_worker = {
+      autoscale = true
+      max_nodes = 5
+      min_nodes = 3
+      name      = "${var.project_info.name}-k8s-worker"
+    }
+    surge_upgrade = true
+  })
 }
 
 resource "digitalocean_kubernetes_cluster" "main" {
-  # depends_on = [digitalocean_vpc.cluster]
-
-  auto_upgrade  = var.k8s_conf.auto_upgrade
-  name          = var.k8s_conf.name
-  region        = var.do_conf.region
-  surge_upgrade = var.k8s_conf.surge_upgrade
-  tags          = var.k8s_conf.tags
-  version       = data.digitalocean_kubernetes_versions.main.latest_version
-  vpc_uuid      = digitalocean_vpc.main.id
-
+  auto_upgrade = local.kubernetes_conf.auto_upgrade
+  name         = local.kubernetes_conf.name
   node_pool {
-    auto_scale = var.k8s_conf.node_pool_worker.autoscale
-    max_nodes  = var.k8s_conf.node_pool_worker.max_nodes
-    min_nodes  = var.k8s_conf.node_pool_worker.min_nodes
-    name       = var.k8s_conf.node_pool_worker.name
-    size       = var.k8s_conf.node_pool_worker.size
-    tags       = var.k8s_conf.node_pool_worker.tags
+    auto_scale = local.kubernetes_conf.node_pool_worker.autoscale
+    max_nodes  = local.kubernetes_conf.node_pool_worker.max_nodes
+    min_nodes  = local.kubernetes_conf.node_pool_worker.min_nodes
+    name       = local.kubernetes_conf.node_pool_worker.name
+    size       = local.kubernetes_conf.node_pool_worker.node_droplet_size_slug
+    tags       = ["${var.project_info.name}-k8s-worker"]
   }
+  region        = local.kubernetes_conf.region
+  surge_upgrade = local.kubernetes_conf.surge_upgrade
+  tags          = ["${var.project_info.name}-k8s-cluster"]
+  version       = data.digitalocean_kubernetes_versions.main.latest_version
+  vpc_uuid      = local.kubernetes_conf.vpc_uuid
 }
 
 resource "digitalocean_project_resources" "main" {
@@ -28,12 +41,4 @@ resource "digitalocean_project_resources" "main" {
   resources = [
     digitalocean_kubernetes_cluster.main.urn
   ]
-}
-
-# TODO capture the default VPCs and dance around them
-resource "digitalocean_vpc" "main" {
-  description = var.k8s_conf.description
-  ip_range    = var.k8s_conf.vpc_ip_range
-  name        = var.k8s_conf.name
-  region      = var.do_conf.region
 }
