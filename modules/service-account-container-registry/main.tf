@@ -1,5 +1,5 @@
 locals {
-  secret_name = "${var.container_registry_info.name}-docker-registry-credentials"
+  secret_name = "docker-registry-${var.container_registry_info.name}-credentials"
 }
 
 resource "digitalocean_container_registry_docker_credentials" "main" {
