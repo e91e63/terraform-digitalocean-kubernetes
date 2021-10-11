@@ -3,3 +3,10 @@ variable "container_registry_info" {
     name = string
   })
 }
+
+variable "service_account_conf" {
+  default = { namespace = "default" }
+  type = object({
+    namespace = string
+  })
+}

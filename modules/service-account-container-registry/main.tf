@@ -18,14 +18,12 @@ resource "kubernetes_secret" "main" {
   type = "kubernetes.io/dockerconfigjson"
 }
 
-resource "kubernetes_service_account" "serviceaccount_default" {
+resource "kubernetes_default_service_account" "main" {
   automount_service_account_token = false
-  metadata {
-    name      = "default"
-    namespace = "default"
-  }
-
   image_pull_secret {
     name = local.secret_name
+  }
+  metadata {
+    namespace = var.service_account_conf.namespace
   }
 }
