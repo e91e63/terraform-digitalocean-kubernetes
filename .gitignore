@@ -4,9 +4,3 @@
 *.tfstate.*
 tf.plan
 crash.log
-
-# Terragrunt
-**/.terragrunt-cache/*
-
-# VS Code
-.vscode/
