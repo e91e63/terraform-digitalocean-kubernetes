@@ -6,7 +6,7 @@ Terraform modules for managing Kubernetes clusters in DigitalOcean.
 
 ```sh
 sudo snap connect doctl:kube-config
-mkdir "$HOME/.kube"
+mkdir -p "$HOME/.kube"
 rm -rf "$HOME/kube/*"
 CLUSTER_ID=$(terragrunt output -json | jq -r '.info.value.id')
 doctl kubernetes cluster kubeconfig save "$CLUSTER_ID"
