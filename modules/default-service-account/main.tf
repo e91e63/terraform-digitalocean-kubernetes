@@ -1,5 +1,5 @@
 resource "digitalocean_container_registry_docker_credentials" "main" {
-  registry_name = var.container_registry_info.name
+  registry_name = var.container_registry_info.registry_name
 }
 
 resource "kubernetes_default_service_account" "main" {
@@ -22,7 +22,7 @@ resource "kubernetes_secret" "main" {
     ".dockerconfigjson" = digitalocean_container_registry_docker_credentials.main.docker_credentials
   }
   metadata {
-    name = "docker-registry-${var.container_registry_info.name}-credentials"
+    name = "docker-registry-${var.container_registry_info.registry_name}-credentials"
   }
   type = "kubernetes.io/dockerconfigjson"
 }
