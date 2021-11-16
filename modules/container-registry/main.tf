@@ -12,3 +12,13 @@ resource "digitalocean_container_registry_docker_credentials" "write" {
   registry_name = digitalocean_container_registry.main.name
   write         = true
 }
+
+terraform {
+  required_providers {
+    digitalocean = {
+      source  = "digitalocean/digitalocean"
+      version = "~> 2"
+    }
+  }
+  required_version = "~> 1"
+}
