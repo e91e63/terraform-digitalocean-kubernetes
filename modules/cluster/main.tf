@@ -1,3 +1,14 @@
+terraform {
+  experiments = [module_variable_optional_attrs]
+  required_providers {
+    digitalocean = {
+      source  = "digitalocean/digitalocean"
+      version = "~> 2"
+    }
+  }
+  required_version = "~> 1"
+}
+
 data "digitalocean_kubernetes_versions" "main" {
   version_prefix = local.kubernetes_conf.version
 }
@@ -41,15 +52,4 @@ resource "digitalocean_project_resources" "main" {
   resources = [
     digitalocean_kubernetes_cluster.main.urn
   ]
-}
-
-terraform {
-  experiments = [module_variable_optional_attrs]
-  required_providers {
-    digitalocean = {
-      source  = "digitalocean/digitalocean"
-      version = "~> 2"
-    }
-  }
-  required_version = "~> 1"
 }

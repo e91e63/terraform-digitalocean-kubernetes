@@ -1,3 +1,18 @@
+terraform {
+  required_providers {
+    digitalocean = {
+      source  = "digitalocean/digitalocean"
+      version = "~> 2"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2"
+    }
+  }
+
+  required_version = "~> 1"
+}
+
 resource "digitalocean_container_registry_docker_credentials" "main" {
   registry_name = var.container_registry_info.registry_name
 }
@@ -25,19 +40,4 @@ resource "kubernetes_secret" "main" {
     name = "docker-registry-${var.container_registry_info.registry_name}-credentials"
   }
   type = "kubernetes.io/dockerconfigjson"
-}
-
-terraform {
-  required_providers {
-    digitalocean = {
-      source  = "digitalocean/digitalocean"
-      version = "~> 2"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2"
-    }
-  }
-
-  required_version = "~> 1"
 }
